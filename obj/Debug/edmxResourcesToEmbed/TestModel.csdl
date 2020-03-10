@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="ClientId" />
+    </Key>
+    <Property Name="ClientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DOB" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="TimeSheets" Relationship="Self.FK_TimeSheet_Client_ClientId" FromRole="Client" ToRole="TimeSheet" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="EmailAddress" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DOB" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="TimeSheets" Relationship="Self.FK_TimeSheet_Employee_EmployeeId" FromRole="Employee" ToRole="TimeSheet" />
+  </EntityType>
+  <EntityType Name="Task">
+    <Key>
+      <PropertyRef Name="TaskId" />
+    </Key>
+    <Property Name="TaskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TaskName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="TaskDescription" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="TimeSheets" Relationship="Self.FK_TimeSheet_Task_TaskId" FromRole="Task" ToRole="TimeSheet" />
+  </EntityType>
+  <EntityType Name="TimeSheet">
+    <Key>
+      <PropertyRef Name="TimeSheetId" />
+    </Key>
+    <Property Name="TimeSheetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TaskId" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="ClientId" Type="Int32" Nullable="false" />
+    <Property Name="HoursDone" Type="Int32" Nullable="false" />
+    <Property Name="DateWorked" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Client" Relationship="Self.FK_TimeSheet_Client_ClientId" FromRole="TimeSheet" ToRole="Client" />
+    <NavigationProperty Name="Employee" Relationship="Self.FK_TimeSheet_Employee_EmployeeId" FromRole="TimeSheet" ToRole="Employee" />
+    <NavigationProperty Name="Task" Relationship="Self.FK_TimeSheet_Task_TaskId" FromRole="TimeSheet" ToRole="Task" />
+  </EntityType>
+  <Association Name="FK_TimeSheet_Client_ClientId">
+    <End Role="Client" Type="Self.Client" Multiplicity="1" />
+    <End Role="TimeSheet" Type="Self.TimeSheet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Client">
+        <PropertyRef Name="ClientId" />
+      </Principal>
+      <Dependent Role="TimeSheet">
+        <PropertyRef Name="ClientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeSheet_Employee_EmployeeId">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
+    <End Role="TimeSheet" Type="Self.TimeSheet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="TimeSheet">
+        <PropertyRef Name="EmployeeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TimeSheet_Task_TaskId">
+    <End Role="Task" Type="Self.Task" Multiplicity="1" />
+    <End Role="TimeSheet" Type="Self.TimeSheet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Task">
+        <PropertyRef Name="TaskId" />
+      </Principal>
+      <Dependent Role="TimeSheet">
+        <PropertyRef Name="TaskId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="TestEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Clients" EntityType="Self.Client" />
+    <EntitySet Name="Employees" EntityType="Self.Employee" />
+    <EntitySet Name="Tasks" EntityType="Self.Task" />
+    <EntitySet Name="TimeSheets" EntityType="Self.TimeSheet" />
+    <AssociationSet Name="FK_TimeSheet_Client_ClientId" Association="Self.FK_TimeSheet_Client_ClientId">
+      <End Role="Client" EntitySet="Clients" />
+      <End Role="TimeSheet" EntitySet="TimeSheets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeSheet_Employee_EmployeeId" Association="Self.FK_TimeSheet_Employee_EmployeeId">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="TimeSheet" EntitySet="TimeSheets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TimeSheet_Task_TaskId" Association="Self.FK_TimeSheet_Task_TaskId">
+      <End Role="Task" EntitySet="Tasks" />
+      <End Role="TimeSheet" EntitySet="TimeSheets" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
